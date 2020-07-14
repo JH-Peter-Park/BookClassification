@@ -1,7 +1,7 @@
 import numpy as np
 import cv2
 
-src = cv2.imread('test7.png')
+src = cv2.imread('img/test7.png')
 dst = src.copy()
 gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 canny = cv2.Canny(gray, 1500, 3000, apertureSize = 5, L2gradient = False)

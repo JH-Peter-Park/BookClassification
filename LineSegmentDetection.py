@@ -3,7 +3,7 @@ import math
 import numpy as np
 
 #Read gray image
-img = cv2.imread("test1.jpg")
+img = cv2.imread("img/test7.png")
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 #Create default parametrization LSD
 lsd = cv2.createLineSegmentDetector(0)

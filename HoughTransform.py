@@ -5,7 +5,7 @@ import math
 def calcDist(x1,y1,x2,y2):
     return math.sqrt( math.pow(x2-x1,2) + math.pow(y2-y1,2) )
 
-src = cv2.imread("test7.png")
+src = cv2.imread("img/test7.png")
 dst = src.copy()
 gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 canny = cv2.Canny(gray, 1500, 3000, apertureSize = 5, L2gradient = False) #1500 1000

@@ -1,31 +1,33 @@
 import numpy as np
 import cv2
-
+# meanshift 문제점: 같은색깔끼리 edge blur처리해버림
 src = cv2.imread('img/test1.jpg')
 dst = src.copy()
 # blur = cv2.bilateralFilter(src,9,100,100)
-blur = cv2.GaussianBlur(src, (5,5), 0)
-meanshift = cv2.pyrMeanShiftFiltering(blur,10,50,2)
-canny = cv2.Canny(meanshift, 1500, 3000, apertureSize = 5, L2gradient = False) #1500 1000
-lines = cv2.HoughLines(canny, 0.6, np.pi / 180, 150, srn = 0, stn = 0, min_theta = np.radians(170), max_theta = np.radians(190))
-# cv2.HoughLines(검출 이미지, 거리, 각도, 임곗값, 거리 약수, 각도 약수, 최소 각도, 최대 각도)
+# blur = cv2.GaussianBlur(src, (5,5), 1)
+meanshift = cv2.pyrMeanShiftFiltering(src,10,100,3)
+gray = cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
+canny = cv2.Canny(gray, 1500, 3000, apertureSize = 5, L2gradient = False)
+minLineLength = 300
+maxLineGap = 50
+lines = cv2.HoughLinesP(canny,1,np.pi/360,10,minLineLength,maxLineGap)
+xCoordMeans = []
+for line in lines:
+    x1,y1,x2,y2 = line[0]
+    if(y1 == y2):
+        continue
+    xMean = int((x1+x2)/2)
+    print(line[0])
+    xCoordMeans.append(xMean)
+    print(xMean)
+    # slope = (y2-y1)/(x2-x1)
+    # height = src.shape[0]
+    # topCoord = slope * (0 - x1) + y1
+    # bottomCoord = slope * ( height - x1) + y1
+    cv2.line(dst,(x2,y2),(x1,y1),(0,255,0),2)
+    # cv2.line(dst, (xMean, 0), (xMean, src.shape[1]), (0, 0, 255), 2)
 
-
-for i in lines:
-    rho, theta = i[0][0], i[0][1]
-    a, b = np.cos(theta), np.sin(theta)
-    x0, y0 = a*rho, b*rho
-
-    scale = src.shape[0] + src.shape[1]
-
-    x1 = int(x0 + scale * -b)
-    y1 = int(y0 + scale * a)
-    x2 = int(x0 - scale * -b)
-    y2 = int(y0 - scale * a)
-
-    cv2.line(dst, (x1, y1), (x2, y2), (0, 0, 255), 2)
-    cv2.circle(dst, (x0, y0), 3, (255, 0, 0), 5, cv2.FILLED)
-
+cv2.imshow("meanshift", meanshift)
 cv2.imshow("canny", canny)
 cv2.imshow("dst", dst)
 

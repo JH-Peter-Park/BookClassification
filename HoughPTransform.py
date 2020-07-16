@@ -5,7 +5,8 @@ src = cv2.imread('img/test9.jpg')
 dst = src.copy()
 # src_resized = cv2.resize(src, dsize=(0, 0), fx=0.5, fy=0.5, interpolation=cv2.INTER_LINEAR) 이미지 크기는 상관없는듯
 # blur = cv2.GaussianBlur(src, (5,5), 1)
-meanshift = cv2.pyrMeanShiftFiltering(src,10,100,5)
+blur = cv2.GaussianBlur(src, ksize = (3,3), sigmaX=0)
+meanshift = cv2.pyrMeanShiftFiltering(blur,10,50,5)
 gray = cv2.cvtColor(meanshift, cv2.COLOR_BGR2GRAY)
 canny = cv2.Canny(gray, 1000, 3000, apertureSize = 5, L2gradient = False)
 

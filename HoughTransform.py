@@ -17,6 +17,7 @@ lines_polar = cv2.HoughLines(canny, 1, np.pi / 180, 150, srn = 0, stn = 0, min_t
 # cv2.HoughLines(검출 이미지, 거리, 각도, 임곗값, 거리 약수, 각도 약수, 최소 각도, 최대 각도)
 
 lines_cartesian = []
+coords_X = []
 
 for i in lines_polar: # 극좌표 -> 직교좌표 변환
     rho, theta = i[0][0], i[0][1]
@@ -45,23 +46,56 @@ for i in lines_cartesian:
 
     slope = i[0]
     intercept_Y = i[1]
-    coord_X = i[2]
+    x = i[2]
 
     y1 = 0
     y2 = src.shape[0]
 
-    if coord_X != 0: # Y축에 평행
-        x1 = int(coord_X)
-        x2 = int(coord_X)
+    if x != 0: # Y축에 평행
+        x1 = int(x)
+        x2 = int(x)
     else:
         x1 = int((0 - intercept_Y) / slope)
         x2 = int((y2 - intercept_Y) / slope)
 
-
+    coords_X.append([x1,x2,slope])
     cv2.line(dst, (x1, y1), (x2, y2), (0, 0, 255), 2)
 
 
+# # 평균 직선 구하기
+# means_X = []
+# prev_X = -999
+# sum_X = 0
+#
+# sum_slope = 0
+#
+#
+# line_count = 0
+# for i in coords_X:
+#     curr_X = i[0]
+#     slope =
+#     if line_count == 0:
+#         prev_X = curr_X
+#         line_count += 1
+#     else:
+#         if curr_X - prev_X >= 100: #직선사이 간격 100px 이상
+#             mean = int(sum_X / line_count)
+#             mean_slope = int(sum_slope / line_count)
+#             means_X.append([mean, mean_slope])
+#             prev_X = curr_X
+#
+#             # 초기화
+#             line_count = 0
+#             sum_X = 0
+#             sum_slope = 0
+#         else:
+#             sum_X += curr_X
+#             sum_slope +=
+#             prev_X = curr_X
+#
+
 print(lines_cartesian)
+print(coords_X)
 
 cv2.imshow("canny", canny)
 cv2.imshow("dst", dst)
